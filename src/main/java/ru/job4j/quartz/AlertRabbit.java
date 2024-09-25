@@ -34,18 +34,18 @@ public class AlertRabbit {
         }
     }
 
+    public static class Rabbit implements Job {
+        @Override
+        public void execute(JobExecutionContext context) {
+            System.out.println("Rabbit runs here ...");
+        }
+    }
+
     private static Properties loadProperties() throws IOException {
         Properties properties = new Properties();
         try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
             properties.load(in);
         }
         return properties;
-    }
-
-    public static class Rabbit implements Job {
-        @Override
-        public void execute(JobExecutionContext context) {
-            System.out.println("Rabbit runs here ...");
-        }
     }
 }
