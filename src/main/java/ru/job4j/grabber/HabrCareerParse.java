@@ -16,7 +16,6 @@ public class HabrCareerParse {
     public static final int PAGENUMBER = 5;
 
     public static void main(String[] args) throws IOException {
-        /*int pageNumber = 1;*/
         for (int i = 1; i <= PAGENUMBER; i++) {
             String fullLink = "%s%s%d%s".formatted(SOURCE_LINK, PREFIX, i, SUFFIX);
             Connection connection = Jsoup.connect(fullLink);
