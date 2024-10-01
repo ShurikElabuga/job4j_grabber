@@ -53,8 +53,14 @@ public class HabrCareerParse implements Parse {
                 Post post = new Post(vacancyName, linkPost, description, created);
                 result.add(post);
             });
-            return result;
         }
-        return null;
+        return result;
+    }
+
+    public static void main(String[] args) throws IOException {
+        HabrCareerParse habrCareerParse = new HabrCareerParse(p -> LocalDateTime.now());
+        String link = String.format("%s%s%s", SOURCE_LINK, PREFIX, SUFFIX);
+        List<Post> posts = habrCareerParse.list(link);
+        posts.forEach(System.out::println);
     }
 }
