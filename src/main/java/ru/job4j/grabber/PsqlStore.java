@@ -54,8 +54,8 @@ public class PsqlStore implements Store {
                 while (resultSet.next()) {
                     allPosts.add(new Post(resultSet.getInt("id"),
                             resultSet.getString("name"),
-                            resultSet.getString("text"),
                             resultSet.getString("link"),
+                            resultSet.getString("text"),
                             resultSet.getTimestamp("created").toLocalDateTime()));
                 }
             }
