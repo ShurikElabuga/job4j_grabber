@@ -4,6 +4,9 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -42,6 +45,27 @@ public class Grabber implements Grab {
         scheduler.scheduleJob(job, trigger);
     }
 
+    public void web(Store store, int port) {
+        new Thread(() -> {
+            try (ServerSocket server = new ServerSocket(port)) {
+                while (!server.isClosed()) {
+                    Socket socket = server.accept();
+                    try (OutputStream out = socket.getOutputStream()) {
+                        out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+                        for (Post post : store.getAll()) {
+                            out.write(post.toString().getBytes(Charset.forName("Windows-1251")));
+                            out.write(System.lineSeparator().getBytes());
+                        }
+                    } catch (IOException io) {
+                        io.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     public static class GrabJob implements Job {
         @Override
         public void execute(JobExecutionContext context) {
@@ -69,6 +93,9 @@ public class Grabber implements Grab {
         var parse = new HabrCareerParse(new HabrCareerDateTimeParser());
         var store = new PsqlStore(config);
         var time = Integer.parseInt(config.getProperty("time"));
-        new Grabber(parse, store, scheduler, time).init();
+        Grabber grabber = new Grabber(parse, store, scheduler, time);
+        grabber.init();
+        grabber.web(store, Integer.parseInt(config.getProperty("port")));
+
     }
 }
