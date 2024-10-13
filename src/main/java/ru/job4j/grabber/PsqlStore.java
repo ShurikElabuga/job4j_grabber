@@ -1,6 +1,5 @@
 package ru.job4j.grabber;
 
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,29 +80,6 @@ public class PsqlStore implements Store {
     public void close() throws Exception {
         if (connection != null) {
             connection.close();
-        }
-    }
-
-    public static void main(String[] args) {
-        Properties config = new Properties();
-        try (InputStream input = PsqlStore.class.getClassLoader()
-                .getResourceAsStream("rabbit.properties")) {
-            config.load(input);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        try (Store psql = new PsqlStore(config)) {
-            String link = String.format("%s%s%s", HabrCareerParse.SOURCE_LINK, HabrCareerParse.PREFIX, HabrCareerParse.SUFFIX);
-            List<Post> list = new HabrCareerParse(new HabrCareerDateTimeParser()).list(link);
-            list.forEach(psql :: save);
-            List<Post> posts = psql.getAll();
-            for (Post p : posts) {
-                System.out.println(p);
-            }
-            System.out.println(psql.getAll().size());
-            System.out.println(psql.findById(2));
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

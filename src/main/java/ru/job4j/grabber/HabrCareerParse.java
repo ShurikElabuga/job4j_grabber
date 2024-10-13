@@ -56,11 +56,4 @@ public class HabrCareerParse implements Parse {
         }
         return result;
     }
-
-    public static void main(String[] args) throws IOException {
-        HabrCareerParse habrCareerParse = new HabrCareerParse(p -> LocalDateTime.now());
-        String link = String.format("%s%s%s", SOURCE_LINK, PREFIX, SUFFIX);
-        List<Post> posts = habrCareerParse.list(link);
-        posts.forEach(System.out::println);
-    }
 }
