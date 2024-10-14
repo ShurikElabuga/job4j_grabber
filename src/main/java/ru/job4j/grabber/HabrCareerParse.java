@@ -30,7 +30,7 @@ public class HabrCareerParse implements Parse {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Elements row = document.select(".basic-section basic-section--appearance-vacancy-description");
+        Elements row = document.select(".vacancy-description__text");
         return row.text();
     }
 
@@ -43,13 +43,13 @@ public class HabrCareerParse implements Parse {
             Elements rows = document.select(".vacancy-card__inner");
             rows.forEach(row -> {
                 Element titleElement = row.select(".vacancy-card__title").first();
+                String vacancyName = titleElement.text();
                 Element linkElement = titleElement.child(0);
                 Element dateElement = row.select(".vacancy-card__date").first();
                 Element linkDateElement = dateElement.child(0);
-                String vacancyName = titleElement.text();
+                LocalDateTime created = dateTimeParser.parse(linkDateElement.attr("datetime"));
                 String linkPost = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
                 String description = retrieveDescription(linkPost);
-                LocalDateTime created = dateTimeParser.parse(linkDateElement.attr("datetime"));
                 Post post = new Post(vacancyName, linkPost, description, created);
                 result.add(post);
             });
